@@ -10,4 +10,5 @@ public class NoAVL {
         this.direita = null;
         this.altura = 1;
     }
+    
 }

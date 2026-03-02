@@ -7,22 +7,13 @@ public class Main {
         ArvoreAVL arvore = new ArvoreAVL();
 
         List<String> linhas = leitor.lerLinhas("Text.txt");
+        List<String> linha = processador.separarPalavras(linhas.get(0));
 
-        for (String linha : linhas) {
-            System.out.println("Linha:");
-            System.out.println(linha);
-
-            List<String> palavras = processador.separarPalavras(linha);
-
-            System.out.println("Lista de palavras:");
-
-            for (String palavra : palavras) {
-                for (int i = palavras.size() - 1; i>=0; i--){
-                    arvore.inserir(palavras.get(i));
-                }
-            }
-
-            System.out.println("------------------");
+        System.out.println("linha: " + linha);
+        for (String palavra : linha) {
+            arvore.inserir(palavra);
         }
+        System.out.println("Imprimindo em ordem");
+        arvore.imprimirEmOrdem();
     }
 }
