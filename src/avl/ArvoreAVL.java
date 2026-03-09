@@ -1,6 +1,17 @@
+package src.avl;
+import src.hash.GeradorSHA1;
+
 public class ArvoreAVL {
 
     private NoAVL raiz;
+
+    public NoAVL getRaiz() {
+        return raiz;
+    }
+
+    public ArvoreAVL() {
+        this.raiz = null;
+    }
 
     private int altura(NoAVL no) {
         if (no == null) {
@@ -9,29 +20,26 @@ public class ArvoreAVL {
         return no.altura;
     }
 
-    public ArvoreAVL() {
-        this.raiz = null;
-    }
-
-    public void inserir(String valor) {
-        raiz = inserirRecursivo(raiz, valor);
+    public void inserir(String palavra) {
+        String hash = GeradorSHA1.gerar(palavra);
+        raiz = inserirRecursivo(raiz, palavra, hash);
     }
 
     private void atualizaAltura(NoAVL no) {
         no.altura = 1 + Math.max(altura(no.esquerda), altura(no.direita));
     }
 
-    private NoAVL inserirRecursivo(NoAVL no, String valor) {
+    private NoAVL inserirRecursivo(NoAVL no, String palavra, String hash) {
         if (no == null) {
-            return new NoAVL(valor);
+            return new NoAVL(palavra, hash);
         }
 
-        int comparacao = valor.compareToIgnoreCase(no.valor);
+        int comparacao = palavra.compareToIgnoreCase(no.palavra);
 
         if (comparacao < 0) {
-            no.esquerda = inserirRecursivo(no.esquerda, valor);
+            no.esquerda = inserirRecursivo(no.esquerda, palavra, hash);
         } else if (comparacao > 0) {
-            no.direita = inserirRecursivo(no.direita, valor);
+            no.direita = inserirRecursivo(no.direita, palavra, hash);
         } else {
             return no;
         }
@@ -93,8 +101,35 @@ public class ArvoreAVL {
     private void imprimirEmOrdemRecursivo(NoAVL no) {
         if (no != null) {
             imprimirEmOrdemRecursivo(no.esquerda);
-            System.out.print(no.valor + " ");
+            System.out.print("(" + no.altura + ")" + no.palavra + "|");
             imprimirEmOrdemRecursivo(no.direita);
         }
+    }
+
+    public String calcularHash(){
+        return calcularHashRecursivo(raiz);
+    }
+
+    public String calcularHashRecursivo(NoAVL no) {
+        if (no == null){
+            return "";
+        }
+
+        String hashEsquerda = calcularHashRecursivo(no.esquerda);
+        String hashDireita = calcularHashRecursivo(no.direita);
+
+        String combinado = "";
+
+        if (!hashEsquerda.isEmpty()){
+            combinado += hashEsquerda;
+        }
+
+        if (!hashDireita.isEmpty()){
+            combinado += hashDireita;
+        }
+
+        combinado += no.hash;
+
+        return GeradorSHA1.gerar(combinado);
     }
 }
